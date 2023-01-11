@@ -1,5 +1,7 @@
 package main
 
+import "github.com/gin-gonic/gin"
+
 /*Ejercicio 2 - Manipulando el body
 
 Vamos a crear un endpoint llamado /saludo. Con una pequeña estructura con nombre y apellido que al pegarle deberá responder en texto “Hola + nombre + apellido”
@@ -14,32 +16,27 @@ La estructura deberá ser como esta:
 }
 */
 
-import (
-	"github.com/gin-gonic/gin"
-)
-
-type person struct {
-	Name     string `json:"name"`
-	LastName string `json:"last_name"`
-}
-
 func main() {
-	router := gin.Default()
-	router.POST("/saludo", func(c *gin.Context) {
-		persona := person{
-			Name:     "Gustavo",
-			LastName: "Aguero",
-		}
-		//Guardamos el json en la variable de tipo person persona
-		c.BindJSON(&persona)
-		response := "Hola" + " " + persona.Name + " " + persona.LastName
-		//response as string
-		//c.String(200, response)
-		//response as json
-		c.JSON(200, gin.H{"message": response})
-	})
-	err := router.Run(":8000")
-	if err != nil {
-		panic(err)
+
+	type Datos struct {
+		Nombre   string `json:"nombre"`
+		Apellido string `json:"apellido"`
 	}
+
+	router := gin.Default()
+
+	router.POST("/saludo", func(ctx *gin.Context) {
+		newPersona := Datos{
+			Nombre:   "Gustavo",
+			Apellido: "Aguero Ferrari",
+		}
+
+		var response = "Hola" + " " + newPersona.Nombre + " " + newPersona.Apellido
+		ctx.BindJSON(newPersona)
+
+		ctx.JSON(200, gin.H{
+			"message": response,
+		})
+	})
+	router.Run()
 }
