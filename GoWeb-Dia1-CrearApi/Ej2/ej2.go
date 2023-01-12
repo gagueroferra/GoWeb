@@ -18,24 +18,21 @@ La estructura deberá ser como esta:
 
 func main() {
 
-	type Datos struct {
-		Nombre   string `json:"nombre"`
-		Apellido string `json:"apellido"`
-	}
-
 	router := gin.Default()
 
-	router.POST("/saludo", func(ctx *gin.Context) {
-		newPersona := Datos{
-			Nombre:   "Gustavo",
-			Apellido: "Aguero Ferrari",
+	router.POST("/saludar", func(ctx *gin.Context) {
+		type Persona struct {
+			Nombre   string `json:"name"`
+			Apellido string `json:"apellido"`
 		}
-
-		var response = "Hola" + " " + newPersona.Nombre + " " + newPersona.Apellido
-		ctx.BindJSON(newPersona)
-
+		persona := Persona{
+			Nombre:   "Gustavo",
+			Apellido: "Aguero",
+		}
+		ctx.BindJSON(&persona)
+		saludo := "Hola" + " " + persona.Nombre + " " + persona.Apellido
 		ctx.JSON(200, gin.H{
-			"message": response,
+			"message": saludo,
 		})
 	})
 	router.Run()
